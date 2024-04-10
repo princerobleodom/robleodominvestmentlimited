@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Robleodom Investment Limited</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .post {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .post h2 {
+            margin-top: 0;
+        }
+
+        .post img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        .post iframe {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        .delete-button {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .like-button {
+            background-color: green;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Robleodom Blog</h1>
+        <ul>
+            {% for post in posts %}
+            <li class="post">
+                <h2>{{ post.title }}</h2>
+                <p>{{ post.content }}</p>
+                {% if post.image_url %}
+                    <img src="{{ post.image_url }}" alt="Post Image">
+                {% endif %}
+                {% if post.video_url %}
+                    <iframe src="{{ post.video_url }}" frameborder="0" allowfullscreen></iframe>
+                {% endif %}
+                <button class="like-button" onclick="likePost({{ loop.index0 }})">Like</button>
+                <span id="likes-{{ loop.index0 }}">{{ post.likes }} Likes</span>
+                {% if is_logged_in %}
+                    <form action="/delete/{{ loop.index0 }}" method="post" style="display: inline;">
+                        <button type="submit" class="delete-button">Delete</button>
+                    </form>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+
+        {% if is_logged_in and is_authorized %}
+            <a href="/create" style="float: right;">Create a New Post</a>
+        {% endif %}
+
+        {% if is_logged_in %}
+            <a href="{{ url_for('logout') }}" style="float: right; margin-right: 10px;">Logout</a>
+        {% endif %}
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Robleodom Investment Limited. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function likePost(postIndex) {
+            var likeButton = document.getElementsByClassName('like-button')[postIndex];
+            if (!likeButton.disabled) {
+                likeButton.disabled = true;
+                var likesSpan = document.getElementById('likes-' + postIndex);
+                var currentLikes = parseInt(likesSpan.innerText.split(' ')[0]);
+                likesSpan.innerText = (currentLikes + 1) + ' Likes';
+                // Send a POST request to the server to update the like count
+                fetch('/like/' + postIndex, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ postIndex: postIndex }),
+                }).then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to update like count');
+                    }
+                }).catch(error => {
+                    console.error('Error updating like count:', error);
+                    // Re-enable the like button on error
+                    likeButton.disabled = false;
+                });
+            }
+        }
+    </script>
+</body>
+</html>
