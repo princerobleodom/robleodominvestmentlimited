@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Post</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            background-color: yellow;
+            color: black;
+        }
+
+        .container {
+            background-color: white;
+            color: black;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="submit"] {
+            background-color: black;
+            color: yellow;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        h1 {
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Create a New Post</h1>
+    <div class="container">
+        <form method="POST" enctype="multipart/form-data">
+            <label for="title">Title:</label><br>
+            <input type="text" id="title" name="title" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;"><br>
+            <label for="content">Content:</label><br>
+            <textarea id="content" name="content" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;"></textarea><br>
+            <label for="image">Upload Image:</label><br>
+            <input type="file" id="image" name="image" accept="image/*"><br>
+            <label for="video">Upload Video:</label><br>
+            <input type="file" id="video" name="video" accept="video/*"><br>
+            <input type="submit" value="Create Post">
+        </form>
+    </div>
+</body>
+</html>
